@@ -3,13 +3,12 @@ import { useDispatch } from 'react-redux';
 import { addTodo } from './TodoSlice';
 
 const InputField = () => {
-
   const [text, setText] = useState('');
   const dispatch = useDispatch();
 
   const handleAction = () => {
     if (text.trim().length) {
-      dispatch(addTodo({text}));
+      dispatch(addTodo(text));
       setText('');
     }
   };

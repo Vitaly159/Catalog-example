@@ -1,5 +1,3 @@
-import React from 'react';
-
 import TodoList from './components/TodoList';
 import InputField from './components/InputField';
 
@@ -7,7 +5,7 @@ import './App.css';
 
 function App() {
   
-  return (
+  return(
     <div className="App">
       <InputField />
       <TodoList />
