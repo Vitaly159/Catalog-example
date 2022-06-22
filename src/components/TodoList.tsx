@@ -1,10 +1,10 @@
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
 import { removeTodo } from './TodoSlice';
 
-const TodoList = () => {
-  const todos = useSelector(state => state.todos.todos);
-  const dispatch = useDispatch();
+const TodoList: React.FC = () => {
+  const todos = useAppSelector(state => state.todos.todos);
+  const dispatch = useAppDispatch();
 
   return(
     <ul>

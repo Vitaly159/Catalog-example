@@ -1,5 +1,4 @@
-import {configureStore} from "@reduxjs/toolkit";
-import { TypeOfTag } from "typescript";
+import { configureStore } from "@reduxjs/toolkit";
 import todoReducer from '../components/TodoSlice';
 
 const store = configureStore({

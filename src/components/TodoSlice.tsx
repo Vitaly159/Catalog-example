@@ -1,5 +1,5 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {v4 as uuid} from 'uuid';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { v4 as uuid } from 'uuid';
 
 type Todo = {
   id: string,

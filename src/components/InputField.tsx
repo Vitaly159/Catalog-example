@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../hooks/hooks';
 import { addTodo } from './TodoSlice';
 
-const InputField = () => {
+const InputField: React.FC = () => {
   const [text, setText] = useState('');
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleAction = () => {
     if (text.trim().length) {
