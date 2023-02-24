@@ -121,11 +121,15 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
 
   const clickBomb = (clickedCell: number): void => {
     let copy: any = Object.assign([], cells);
-    copy[clickedCell] = {
-      ...cells[clickedCell],
-      isOpen: true,
-      isBomb: true,
-    };
+
+    mines.forEach(mine => {
+      copy[mine] = {
+        ...cells[mine],
+        isOpen: true,
+        isBomb: true,
+      };
+      
+    })
     setCells(copy);
     dispatch(setIsStartGame(false));
     dispatch(setIsGameOver(true));
@@ -142,9 +146,7 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
     setCells(copy);
   };
 
-  const openCellsAround = (indexTr: number, indexTd: number, clickedCell: number, amountBombsAround: any): void => {
-    // amountBombsAround: any = {};
-    const rest: any[] = [];
+  const openCellsAround = (indexTr: number, indexTd: number, amountBombsAround: any): void => {
 
     [...tableRef?.current?.rows].forEach((el, indexStroke) => {
       [...el.cells].forEach((e, indexCell) => {
@@ -157,7 +159,7 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
             if (mines?.filter((x) => getCellsNumbersAround(indexStroke, indexCell).includes(String(x))).length > 0) {
               return;
             } else {
-              openCellsAround(indexStroke, indexCell, clickedCell, amountBombsAround);
+              openCellsAround(indexStroke, indexCell, amountBombsAround);
             }
           }
         }
@@ -189,7 +191,7 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
       } else if (mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x))).length) {
         clickСellAroundBomb(clickedCell, indexTr, indexTd); //результат нажатия на ячейку рядом с бомбой
       } else {
-        openCellsAround(indexTr, indexTd, clickedCell, {}); //открываем соседние ячейки
+        openCellsAround(indexTr, indexTd, {}); //открываем соседние ячейки - рекурсия
       }
     }
   };
@@ -271,7 +273,7 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
                             alt="bomb"
                           />
                         ) : (
-                          cells[cellsNumber - 1]?.minesAround > 0 && cells[cellsNumber - 1]?.minesAround
+                          cells[cellsNumber - 1]?.minesAround !== 0 && cells[cellsNumber - 1]?.minesAround
                         )}
                       </td>
                     ))}
