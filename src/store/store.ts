@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import todoReducer from '../components/TodoSlice';
+import minesweeper from "../reducer/reducer";
 
 const store = configureStore({
   reducer: {
-    todos: todoReducer,
-  }
+    minesweeper: minesweeper,
+  },
 });
 
 export default store;
