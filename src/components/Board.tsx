@@ -142,53 +142,35 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
     setCells(copy);
   };
 
-  const openCellsAround = (indexTr: number, indexTd: number, clickedCell: number): void => {
-    const cellsAroundIndex: any = [];
-    const amountBombsAround: any = {};
+  const openCellsAround = (indexTr: number, indexTd: number, clickedCell: number, amountBombsAround: any): void => {
+    // amountBombsAround: any = {};
+    const rest: any[] = [];
+
     [...tableRef?.current?.rows].forEach((el, indexStroke) => {
       [...el.cells].forEach((e, indexCell) => {
-        if (getCellsNumbersAround(indexTr, indexTd).includes(e.getAttribute("my-index"))) {
-          cellsAroundIndex.push(e.getAttribute("my-index"));
+        if (!Object.keys(amountBombsAround).includes(String(e.getAttribute("my-index")))) {
+          if (getCellsNumbersAround(indexTr, indexTd).includes(e.getAttribute("my-index"))) {
+            amountBombsAround[e.getAttribute("my-index")] = mines?.filter((x) =>
+              getCellsNumbersAround(indexStroke, indexCell).includes(String(x))
+            ).length;
 
-          amountBombsAround[e.getAttribute("my-index")] = mines?.filter((x) =>
-            getCellsNumbersAround(indexStroke, indexCell).includes(String(x))
-          ).length;
-
-          //   console.log(mines?.filter((x) => getCellsNumbersAround(indexStroke, indexCell).includes(String(x))));
-
-        //   if (
-        //     mines?.filter((x) => getCellsNumbersAround(indexStroke, indexCell).includes(String(x))).length === 0 &&
-        //     clickedCell != e.getAttribute("my-index")
-        //   ) {
-        //     console.log(e.getAttribute("my-index"));
-        //     // openCellsAround(indexStroke, indexCell, clickedCell)
-        //     // console.log(indexStroke, indexCell);
-        //   }
-
-            // if (mines?.filter((x) => getCellsNumbersAround(indexStroke, indexCell).includes(String(x))).length === 0) {
-            //   console.log(getCellsNumbersAround(indexStroke, indexCell));
-
-            //   const tdOriginalIndex = tableRef?.current?.rows[indexStroke].cells[indexCell].getAttribute("my-index")
-            //   [...tableRef?.current?.rows].forEach((el, indexStroke) => {
-            //     [...el.cells].forEach((elem, indexCell) => {
-            //       if (getCellsNumbersAround(indexStroke, indexCell).includes(elem.getAttribute("my-index"))) {
-            //         console.log(getCellsNumbersAround(indexStroke, indexCell));
-            //       }
-            //     });
-            //   });
-            // }
-
+            if (mines?.filter((x) => getCellsNumbersAround(indexStroke, indexCell).includes(String(x))).length > 0) {
+              return;
+            } else {
+              openCellsAround(indexStroke, indexCell, clickedCell, amountBombsAround);
+            }
+          }
         }
       });
     });
 
     setCells(
       cells.map((cell: any, index: number) =>
-        cellsAroundIndex.includes(String(index))
+        amountBombsAround[index] >= 0
           ? {
               ...cell,
               isOpen: true,
-              minesAround: amountBombsAround[index] > 0 ? amountBombsAround[index] : "",
+              minesAround: amountBombsAround[index],
               markIndex: 0,
             }
           : cell
@@ -207,7 +189,7 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
       } else if (mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x))).length) {
         clickСellAroundBomb(clickedCell, indexTr, indexTd); //результат нажатия на ячейку рядом с бомбой
       } else {
-        openCellsAround(indexTr, indexTd, clickedCell); //открываем соседние ячейки
+        openCellsAround(indexTr, indexTd, clickedCell, {}); //открываем соседние ячейки
       }
     }
   };
@@ -289,7 +271,7 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
                             alt="bomb"
                           />
                         ) : (
-                          cells[cellsNumber - 1]?.minesAround
+                          cells[cellsNumber - 1]?.minesAround > 0 && cells[cellsNumber - 1]?.minesAround
                         )}
                       </td>
                     ))}
