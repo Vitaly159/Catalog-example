@@ -13,11 +13,11 @@ const levels: any = {
   hard: { horizontal: 32, vertical: 16 },
 };
 
-// const amountBombs: any = {
-//   easy: 10,
-//   medium: 40,
-//   hard: 100,
-// };
+const amountBombs: any = {
+  easy: 10,
+  medium: 40,
+  hard: 100,
+};
 
 const createCellsData = (radioValue: string): any[] => {
   const arr = [];
@@ -37,7 +37,7 @@ const createCellsData = (radioValue: string): any[] => {
 
 const createBombs = (): number[] => {
   const bombs = [];
-  while (bombs.length < 1) {
+  while (bombs.length < amountBombs[radioValue]) {
     var r = Math.floor(Math.random() * levels[radioValue].horizontal * levels[radioValue].vertical) + 0;
     if (bombs.indexOf(r) === -1) bombs.push(r);
   }
