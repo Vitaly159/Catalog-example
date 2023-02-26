@@ -129,14 +129,6 @@ function Board({ createCellsData, levels, createBombs }: Props) {
     return strokes.flat(2).filter((e) => e && e);
   };
 
-  const findClosedCellsWithoutBombs = (cell: any) => cell.isOpen === false && !mines.includes(cell.cell);
-  const checkIsAllCellsOpened = cells.length ? cells.some(findClosedCellsWithoutBombs) : true;
-
-  const fixResults = () => {
-    const gamesResult = { time: elapsedTime, level: radioValue };
-    dispatch(setPlayers([gamesResult, ...players]));
-  };
-
   const clickBomb = (): void => {
     let copy: any = Object.assign([], cells);
 
@@ -150,7 +142,6 @@ function Board({ createCellsData, levels, createBombs }: Props) {
     dispatch(setCells(copy));
     dispatch(setIsStartGame(false));
     dispatch(setIsGameOver(true));
-    fixResults();
   };
 
   const clickСellAroundBomb = (clickedCell: number, indexTr: number, indexTd: number): void => {
@@ -234,11 +225,7 @@ function Board({ createCellsData, levels, createBombs }: Props) {
     if ((cell.isOpen === false && mines.length - flags > 0) || cell.markIndex > 0) {
       const index = cell.markIndex < 2 ? cell.markIndex + 1 : 0;
 
-      const marks = [
-        <span my-index={cellIndex}></span>,
-        <span my-index={cellIndex}>?</span>,
-        <span my-index={cellIndex}>!</span>,
-      ];
+      const marks = ["", "?", "!"];
 
       let copy: any = Object.assign([], cells);
       copy[cellIndex] = {
@@ -252,15 +239,19 @@ function Board({ createCellsData, levels, createBombs }: Props) {
 
   let cellsNumber = 0; //порядковый номер ячейки с нуля
 
+  const findClosedCellsWithoutBombs = (cell: any) => cell.isOpen === false && !mines.includes(cell.cell);
+  const checkIsAllCellsOpened = cells.length ? cells.some(findClosedCellsWithoutBombs) : true;
+
   useEffect(() => {
     if (!checkIsAllCellsOpened) {
-      fixResults();
+      const gamesResult = { time: elapsedTime, level: radioValue };
+      dispatch(setPlayers([gamesResult, ...players]));
       dispatch(setCells(createCellsData(radioValue)));
       dispatch(setElapsedTime(0));
       dispatch(setIsStartGame(false));
       dispatch(setIsGameOver(false));
       dispatch(setMines(createBombs()));
-      alert(`Похоже на победу! Время игры: ${elapsedTime} секунд`);
+      alert(`Победа! Время игры: ${elapsedTime} секунд`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cells]);

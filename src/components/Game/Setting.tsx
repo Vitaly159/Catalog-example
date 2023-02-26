@@ -17,7 +17,7 @@ import { FormControl, FormLabel, FormControlLabel } from "@material-ui/core";
 import { Dialog, DialogActions, DialogContent, DialogContentText } from "@material-ui/core";
 
 const useStyles = makeStyles({
-  rating: {
+  blueText: {
     textAlign: "center",
     textDecoration: "underline",
     color: "blue",
@@ -44,7 +44,7 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     marginTop: 10,
-    marginBottom: 5,
+    marginBottom: -15,
   },
   marginRight20: {
     marginRight: 20,
@@ -119,8 +119,7 @@ function Setting({ createCellsData, createBombs }: Props) {
 
   return (
     <>
-      <Box className={classes.rating} onClick={handleClickOpen}>
-        {" "}
+      <Box className={classes.blueText} onClick={handleClickOpen}>
         Рейтинг
       </Box>
       <Box className={classes.checkboxes}>
@@ -134,7 +133,7 @@ function Setting({ createCellsData, createBombs }: Props) {
         </FormControl>
       </Box>
       <Box className={classes.gameInfo}>
-        <span onClick={refresh} className={classes.refresh}>
+        <span onClick={refresh} className={`${classes.refresh} ${classes.blueText}`}>
           Начать заново
         </span>
         <span className={classes.marginRight20}>
