@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import { setIsStartGame, setMines, setIsGameOver } from "../reducer/reducer";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { setIsStartGame, setMines, setIsGameOver, setCells, setPlayers, setElapsedTime } from "../../reducer/reducer";
 //стили
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
@@ -68,13 +68,23 @@ const useStyles = makeStyles({
   },
 });
 
-function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
+type Props = {
+  createCellsData: (radioValue: string) => any[];
+  createBombs: () => number[];
+  levels: any;
+};
+
+function Board({ createCellsData, levels, createBombs }: Props) {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const tableRef: any = useRef();
   const mines: any[] = useAppSelector((state) => state.minesweeper.mines);
+  const cells: any[] = useAppSelector((state) => state.minesweeper.cells);
   const radioValue: string = useAppSelector((state) => state.minesweeper.radioValue);
   const isGameOver: boolean = useAppSelector((state) => state.minesweeper.isGameOver);
+  const elapsedTime: number = useAppSelector((state) => state.minesweeper.elapsedTime);
+  const players: any[] = useAppSelector((state) => state.minesweeper.players);
+  const flags = cells.reduce((count: number, { markIndex }: any): number => (markIndex > 0 ? count + 1 : count), 0);
 
   const colors: any = {
     1: classes.lightBlue,
@@ -101,7 +111,7 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
     hard: "calc(0.5vh + 0.6vw)",
   };
 
-  const getCellsNumbersAround = (indexTr: number, indexTd: number) => {
+  const getCellsNumbersAround = (indexTr: number, indexTd: number): any[] => {
     const strokes = Array(3)
       .fill(0)
       .map((el, index) =>
@@ -119,35 +129,42 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
     return strokes.flat(2).filter((e) => e && e);
   };
 
-  const clickBomb = (clickedCell: number): void => {
+  const findClosedCellsWithoutBombs = (cell: any) => cell.isOpen === false && !mines.includes(cell.cell);
+  const checkIsAllCellsOpened = cells.length ? cells.some(findClosedCellsWithoutBombs) : true;
+
+  const fixResults = () => {
+    const gamesResult = { time: elapsedTime, level: radioValue };
+    dispatch(setPlayers([gamesResult, ...players]));
+  };
+
+  const clickBomb = (): void => {
     let copy: any = Object.assign([], cells);
 
-    mines.forEach(mine => {
+    mines.forEach((mine) => {
       copy[mine] = {
         ...cells[mine],
         isOpen: true,
         isBomb: true,
       };
-      
-    })
-    setCells(copy);
+    });
+    dispatch(setCells(copy));
     dispatch(setIsStartGame(false));
     dispatch(setIsGameOver(true));
+    fixResults();
   };
 
   const clickСellAroundBomb = (clickedCell: number, indexTr: number, indexTd: number): void => {
-    let copy: any = Object.assign([], cells);
+    let copy: any[] = Object.assign([], cells);
     copy[clickedCell] = {
       ...cells[clickedCell],
       isOpen: true,
       markIndex: 0,
       minesAround: mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x))).length,
     };
-    setCells(copy);
+    dispatch(setCells(copy));
   };
 
   const openCellsAround = (indexTr: number, indexTd: number, amountBombsAround: any): void => {
-
     [...tableRef?.current?.rows].forEach((el, indexStroke) => {
       [...el.cells].forEach((e, indexCell) => {
         if (!Object.keys(amountBombsAround).includes(String(e.getAttribute("my-index")))) {
@@ -166,16 +183,18 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
       });
     });
 
-    setCells(
-      cells.map((cell: any, index: number) =>
-        amountBombsAround[index] >= 0
-          ? {
-              ...cell,
-              isOpen: true,
-              minesAround: amountBombsAround[index],
-              markIndex: 0,
-            }
-          : cell
+    dispatch(
+      setCells(
+        cells.map((cell: any, index: number) =>
+          amountBombsAround[index] >= 0
+            ? {
+                ...cell,
+                isOpen: true,
+                minesAround: amountBombsAround[index],
+                markIndex: 0,
+              }
+            : cell
+        )
       )
     );
   };
@@ -187,7 +206,7 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
       dispatch(setIsStartGame(true));
 
       if (mines?.includes(Number(clickedCell))) {
-        clickBomb(clickedCell); //результат нажатия на бомбу
+        clickBomb(); //результат нажатия на бомбу
       } else if (mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x))).length) {
         clickСellAroundBomb(clickedCell, indexTr, indexTd); //результат нажатия на ячейку рядом с бомбой
       } else {
@@ -198,15 +217,13 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
 
   useEffect(() => {
     dispatch(setMines(createBombs()));
-    setCells(createCellsData(radioValue));
+    dispatch(setCells(createCellsData(radioValue)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    dispatch(setMines(createBombs()));
-    setCells(createCellsData(radioValue));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [radioValue]);
+    localStorage.setItem("players", JSON.stringify(players));
+  }, [players]);
 
   const clickRightMouse = (e: any): void => {
     e.preventDefault();
@@ -214,7 +231,7 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
 
     let cell = cells[cellIndex];
 
-    if (cell.isOpen === false) {
+    if ((cell.isOpen === false && mines.length - flags > 0) || cell.markIndex > 0) {
       const index = cell.markIndex < 2 ? cell.markIndex + 1 : 0;
 
       const marks = [
@@ -229,11 +246,24 @@ function Board({ cells, setCells, createCellsData, levels, createBombs }: any) {
         minesAround: marks[index],
         markIndex: index,
       };
-      setCells(copy);
+      dispatch(setCells(copy));
     }
   };
 
   let cellsNumber = 0; //порядковый номер ячейки с нуля
+
+  useEffect(() => {
+    if (!checkIsAllCellsOpened) {
+      fixResults();
+      dispatch(setCells(createCellsData(radioValue)));
+      dispatch(setElapsedTime(0));
+      dispatch(setIsStartGame(false));
+      dispatch(setIsGameOver(false));
+      dispatch(setMines(createBombs()));
+      alert(`Похоже на победу! Время игры: ${elapsedTime} секунд`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cells]);
 
   return (
     <>

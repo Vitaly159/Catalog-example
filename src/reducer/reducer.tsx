@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { setAutoFreeze } from "immer";
+setAutoFreeze(false);
 
 type States = {
   elapsedTime: number;
@@ -6,6 +8,8 @@ type States = {
   radioValue: string;
   mines: number[];
   isGameOver: boolean;
+  cells: any[];
+  players: any[];
 };
 
 const initialState: States = {
@@ -14,6 +18,8 @@ const initialState: States = {
   isStartGame: false,
   radioValue: "easy",
   isGameOver: false,
+  cells: [],
+  players: localStorage.getItem("players") ? JSON.parse(localStorage.getItem("players")!) : [],
 };
 
 const minesWeeperSlice = createSlice({
@@ -36,8 +42,15 @@ const minesWeeperSlice = createSlice({
     setIsGameOver(state, action: PayloadAction<boolean>) {
       state.isGameOver = action.payload;
     },
+    setCells(state, action: PayloadAction<any[]>) {
+      state.cells = action.payload;
+    },
+    setPlayers(state, action: PayloadAction<any[]>) {
+      state.players = action.payload;
+    },
   },
 });
 
-export const { setElapsedTime, setIsStartGame, setRadioValue, setMines, setIsGameOver } = minesWeeperSlice.actions;
+export const { setElapsedTime, setIsStartGame, setRadioValue, setMines, setIsGameOver, setCells, setPlayers } =
+  minesWeeperSlice.actions;
 export default minesWeeperSlice.reducer;
