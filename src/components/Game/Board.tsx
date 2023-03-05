@@ -66,6 +66,21 @@ const useStyles = makeStyles({
   pink: {
     color: "pink",
   },
+  easy: {
+    width: "calc(3vh + 3vw)",
+    height: "calc(3vh + 3vw)",
+    fontSize: "calc(2vh + 2vw)",
+  },
+  medium: {
+    width: "calc(1.2vh + 1.2vw)",
+    height: "calc(1.2vh + 1.2vw)",
+    fontSize: "calc(1vh + 1vw)",
+  },
+  hard: {
+    width: "calc(0.8vh + 1vw)",
+    height: "calc(0.8vh + 1vw)",
+    fontSize: "calc(0.5vh + 0.6vw)",
+  },
 });
 
 type Props = {
@@ -80,7 +95,7 @@ function Board({ createCellsData, levels, createBombs }: Props) {
   const tableRef: any = useRef();
   const mines: any[] = useAppSelector((state) => state.minesweeper.mines);
   const cells: any[] = useAppSelector((state) => state.minesweeper.cells);
-  const radioValue: string = useAppSelector((state) => state.minesweeper.radioValue);
+  const radioValue: any = useAppSelector((state) => state.minesweeper.radioValue);
   const isGameOver: boolean = useAppSelector((state) => state.minesweeper.isGameOver);
   const elapsedTime: number = useAppSelector((state) => state.minesweeper.elapsedTime);
   const players: any[] = useAppSelector((state) => state.minesweeper.players);
@@ -98,18 +113,6 @@ function Board({ createCellsData, levels, createBombs }: Props) {
   };
 
   const chooseColor = (value: number) => colors[value] && colors[value];
-
-  const cellSize: any = {
-    easy: "calc(3vh + 3vw)",
-    medium: "calc(1.2vh + 1.2vw)",
-    hard: "calc(0.8vh + 1vw)",
-  };
-
-  const fontSize: any = {
-    easy: "calc(2vh + 2vw)",
-    medium: "calc(1vh + 1vw)",
-    hard: "calc(0.5vh + 0.6vw)",
-  };
 
   const getCellsNumbersAround = (indexTr: number, indexTd: number): any[] => {
     const strokes = Array(3)
@@ -217,6 +220,7 @@ function Board({ createCellsData, levels, createBombs }: Props) {
   }, [players]);
 
   const clickRightMouse = (e: any): void => {
+    dispatch(setIsStartGame(true));
     e.preventDefault();
     const cellIndex = e.target.getAttribute("my-index");
 
@@ -256,6 +260,12 @@ function Board({ createCellsData, levels, createBombs }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cells]);
 
+  const setSize = (radioValue: string) => {
+    if (radioValue === "easy") return classes.easy;
+    if (radioValue === "medium") return classes.medium;
+    if (radioValue === "hard") return classes.hard;
+  };
+
   return (
     <>
       <Box className={classes.tableBox}>
@@ -271,26 +281,16 @@ function Board({ createCellsData, levels, createBombs }: Props) {
                       <td
                         className={`${classes.cell} ${
                           cells[cellsNumber]?.isOpen ? classes.opened : classes.closed
-                        } ${chooseColor(cells[cellsNumber]?.minesAround)}`}
-                        style={{
-                          width: cellSize[radioValue],
-                          height: cellSize[radioValue],
-                          fontSize: fontSize[radioValue],
-                        }}
+                        } ${chooseColor(cells[cellsNumber]?.minesAround)} ${setSize(radioValue)}`}
                         key={indexTd}
                         my-index={cellsNumber++}
                         onClick={() => isGameOver === false && clickCell(indexTr, indexTd)}
-                        onContextMenu={(e) => {
-                          if (isGameOver === false) {
-                            clickRightMouse(e);
-                            dispatch(setIsStartGame(true));
-                          }
-                        }}
+                        onContextMenu={(e) => isGameOver === false && clickRightMouse(e)}
                       >
                         {cells[cellsNumber - 1]?.isBomb ? (
                           <img
                             className={classes.image}
-                            src="https://grand-screen.com/uploads/pics/images/4113.jpg"
+                            src="https://w1.pngwing.com/pngs/797/343/png-transparent-ship-governance-classic-minesweeper-game-business-android-government-sales-technology-thumbnail.png"
                             alt="bomb"
                           />
                         ) : (

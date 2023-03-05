@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../hooks/hooks";
 
-import "react-tabulator/lib/styles.css";
 import { ReactTabulator } from "react-tabulator";
+import "react-tabulator/lib/styles.css";
 import "tabulator-tables/dist/css/tabulator.min.css";
 
 const RecordsTable = () => {
