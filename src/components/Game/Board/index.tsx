@@ -1,87 +1,16 @@
 import { useEffect, useRef } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { setIsStartGame, setMines, setIsGameOver, setCells, setPlayers, setElapsedTime } from "../../reducer/reducer";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
+import {
+  setIsStartGame,
+  setMines,
+  setIsGameOver,
+  setCells,
+  setPlayers,
+  setElapsedTime,
+} from "../../../reducer/reducer";
 //стили
-import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
-
-const useStyles = makeStyles({
-  wrapper: {
-    flexGrow: 1,
-    padding: 10,
-  },
-  table: {
-    display: "inline",
-    borderCollapse: "collapse",
-  },
-  tableBox: {
-    display: "flex",
-    justifyContent: "center",
-  },
-  cell: {
-    border: "1px black solid",
-    textAlign: "center",
-    background: "rgb(220,220,220)",
-    fontWeight: 600,
-  },
-  closed: {
-    cursor: "pointer",
-    boxShadow: "2px 2px rgb(180,180,180)",
-    "&:hover": {
-      background: "rgb(240,240,240)",
-    },
-    "&:active": {
-      background: "rgb(170,170,170)",
-    },
-  },
-  opened: {
-    background: "white",
-  },
-  image: {
-    width: "80%",
-    height: "80%",
-    objectFit: "contain",
-  },
-  lightBlue: {
-    color: "#6abafc",
-  },
-  green: {
-    color: "green",
-  },
-  red: {
-    color: "red",
-  },
-  hardBlue: {
-    color: "#0128f6",
-  },
-  brown: {
-    color: "brown",
-  },
-  turquoise: {
-    color: "#30d5c8",
-  },
-  black: {
-    color: "black",
-  },
-  pink: {
-    color: "pink",
-  },
-  easy: {
-    width: "calc(3vh + 3vw)",
-    height: "calc(3vh + 3vw)",
-    fontSize: "calc(2vh + 2vw)",
-  },
-  medium: {
-    width: "calc(1.2vh + 1.2vw)",
-    height: "calc(1.2vh + 1.2vw)",
-    fontSize: "calc(1vh + 1vw)",
-  },
-  hard: {
-    width: "calc(0.8vh + 1vw)",
-    height: "calc(0.8vh + 1vw)",
-    fontSize: "calc(0.5vh + 0.6vw)",
-  },
-});
+import { useStyles } from "./BoardStyles";
 
 type Props = {
   createCellsData: (radioValue: string) => any[];
@@ -89,7 +18,7 @@ type Props = {
   levels: any;
 };
 
-function Board({ createCellsData, levels, createBombs }: Props) {
+const Board = ({ createCellsData, levels, createBombs }: Props) => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const tableRef: any = useRef();
@@ -99,7 +28,10 @@ function Board({ createCellsData, levels, createBombs }: Props) {
   const isGameOver: boolean = useAppSelector((state) => state.minesweeper.isGameOver);
   const elapsedTime: number = useAppSelector((state) => state.minesweeper.elapsedTime);
   const players: any[] = useAppSelector((state) => state.minesweeper.players);
-  const flags = cells.reduce((count: number, { markIndex }: any): number => (markIndex > 0 ? count + 1 : count), 0);
+  const flags = cells.reduce(
+    (count: number, { markIndex }: any): number => (markIndex > 0 ? count + 1 : count),
+    0
+  );
 
   const colors: any = {
     1: classes.lightBlue,
@@ -112,13 +44,15 @@ function Board({ createCellsData, levels, createBombs }: Props) {
     8: classes.pink,
   };
 
-  const chooseColor = (value: number) => colors[value] && colors[value];
+  const chooseColor = (value: number) => colors[value];
 
   const getCellsNumbersAround = (indexTr: number, indexTd: number): any[] => {
     const strokes = Array(3)
       .fill(0)
       .map((el, index) =>
-        tableRef?.current?.rows[indexTr - 1 + index] ? tableRef?.current?.rows[indexTr - 1 + index] : undefined
+        tableRef?.current?.rows[indexTr - 1 + index]
+          ? tableRef?.current?.rows[indexTr - 1 + index]
+          : undefined
       )
       .map(
         (e: any) =>
@@ -153,7 +87,8 @@ function Board({ createCellsData, levels, createBombs }: Props) {
       ...cells[clickedCell],
       isOpen: true,
       markIndex: 0,
-      minesAround: mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x))).length,
+      minesAround: mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x)))
+        .length,
     };
     dispatch(setCells(copy));
   };
@@ -167,7 +102,11 @@ function Board({ createCellsData, levels, createBombs }: Props) {
               getCellsNumbersAround(indexStroke, indexCell).includes(String(x))
             ).length;
 
-            if (mines?.filter((x) => getCellsNumbersAround(indexStroke, indexCell).includes(String(x))).length > 0) {
+            if (
+              mines?.filter((x) =>
+                getCellsNumbersAround(indexStroke, indexCell).includes(String(x))
+              ).length > 0
+            ) {
               return;
             } else {
               openCellsAround(indexStroke, indexCell, amountBombsAround);
@@ -194,14 +133,17 @@ function Board({ createCellsData, levels, createBombs }: Props) {
   };
 
   const clickCell = (indexTr: number, indexTd: number) => {
-    const clickedCell: number = tableRef?.current?.rows[indexTr]?.cells[indexTd].getAttribute("my-index");
+    const clickedCell: number =
+      tableRef?.current?.rows[indexTr]?.cells[indexTd].getAttribute("my-index");
 
     if (!cells[clickedCell].isOpen) {
       dispatch(setIsStartGame(true));
 
       if (mines?.includes(Number(clickedCell))) {
         clickBomb(); //результат нажатия на бомбу
-      } else if (mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x))).length) {
+      } else if (
+        mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x))).length
+      ) {
         clickСellAroundBomb(clickedCell, indexTr, indexTd); //результат нажатия на ячейку рядом с бомбой
       } else {
         openCellsAround(indexTr, indexTd, {}); //открываем соседние ячейки - рекурсия
@@ -243,7 +185,8 @@ function Board({ createCellsData, levels, createBombs }: Props) {
 
   let cellsNumber = 0; //порядковый номер ячейки с нуля
 
-  const findClosedCellsWithoutBombs = (cell: any) => cell.isOpen === false && !mines.includes(cell.cell);
+  const findClosedCellsWithoutBombs = (cell: any) =>
+    cell.isOpen === false && !mines.includes(cell.cell);
   const checkIsAllCellsOpened = cells.length ? cells.some(findClosedCellsWithoutBombs) : true;
 
   useEffect(() => {
@@ -267,43 +210,44 @@ function Board({ createCellsData, levels, createBombs }: Props) {
   };
 
   return (
-    <>
-      <Box className={classes.tableBox}>
-        <table className={classes.table} ref={tableRef}>
-          <tbody>
-            {Array(levels[radioValue].vertical)
-              .fill(0)
-              .map((e, indexTr) => (
-                <tr key={indexTr}>
-                  {Array(levels[radioValue].horizontal)
-                    .fill(0)
-                    .map((el, indexTd) => (
-                      <td
-                        className={`${classes.cell} ${
-                          cells[cellsNumber]?.isOpen ? classes.opened : classes.closed
-                        } ${chooseColor(cells[cellsNumber]?.minesAround)} ${setSize(radioValue)}`}
-                        key={indexTd}
-                        my-index={cellsNumber++}
-                        onClick={() => isGameOver === false && clickCell(indexTr, indexTd)}
-                        onContextMenu={(e) => isGameOver === false && clickRightMouse(e)}
-                      >
-                        {cells[cellsNumber - 1]?.isBomb ? (
-                          <img
-                            className={classes.image}
-                            src="https://w1.pngwing.com/pngs/797/343/png-transparent-ship-governance-classic-minesweeper-game-business-android-government-sales-technology-thumbnail.png"
-                            alt="bomb"
-                          />
-                        ) : (
-                          cells[cellsNumber - 1]?.minesAround !== 0 && cells[cellsNumber - 1]?.minesAround
-                        )}
-                      </td>
-                    ))}
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </Box>
-    </>
+    <Box className={classes.tableBox}>
+      <table className={classes.table} ref={tableRef}>
+        <tbody>
+          {Array(levels[radioValue].vertical)
+            .fill(0)
+            .map((e, indexTr) => (
+              <tr key={indexTr}>
+
+                {Array(levels[radioValue].horizontal)
+                  .fill(0)
+                  .map((el, indexTd) => (
+                    <td
+                      className={`${classes.cell} ${
+                        cells[cellsNumber]?.isOpen ? classes.opened : classes.closed
+                      } ${chooseColor(cells[cellsNumber]?.minesAround)} ${setSize(radioValue)}`}
+                      key={indexTd}
+                      my-index={cellsNumber++}
+                      onClick={() => isGameOver === false && clickCell(indexTr, indexTd)}
+                      onContextMenu={(e) => isGameOver === false && clickRightMouse(e)}
+                    >
+                      {cells[cellsNumber - 1]?.isBomb ? (
+                        <img
+                          className={classes.image}
+                          src="https://w1.pngwing.com/pngs/797/343/png-transparent-ship-governance-classic-minesweeper-game-business-android-government-sales-technology-thumbnail.png"
+                          alt="bomb"
+                        />
+                      ) : (
+                        cells[cellsNumber - 1]?.minesAround !== 0 &&
+                        cells[cellsNumber - 1]?.minesAround
+                      )}
+                    </td>
+                  ))}
+                  
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </Box>
   );
 }
 

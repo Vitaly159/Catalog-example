@@ -1,6 +1,6 @@
 import { useAppSelector } from "../../hooks/hooks";
 //компоненты
-import Board from "../../components/Game/Board";
+import Board from "../Game/Board";
 import Setting from "../../components/Game/Setting";
 
 const Game = () => {
@@ -33,7 +33,7 @@ const Game = () => {
 
     return arr;
   };
-
+``
   const createBombs = (): number[] => {
     const bombs = [];
     while (bombs.length < amountBombs[radioValue]) {
