@@ -8,7 +8,6 @@ import {
   setPlayers,
   setElapsedTime,
 } from "../../../reducer/reducer";
-//стили
 import { Box } from "@material-ui/core";
 import { useStyles } from "./BoardStyles";
 import Cell from "./Cell";
@@ -47,23 +46,28 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
   const chooseColor = (value: number) => colors[value];
 
   const getCellsNumbersAround = (indexTr: number, indexTd: number): any[] => {
-    const strokes = Array(3)
+    const tableRows = tableRef?.current?.rows;
+    
+    const rowsAroundClickedCell = Array(3)
       .fill(0)
-      .map((el, index) =>
-        tableRef?.current?.rows[indexTr - 1 + index]
-          ? tableRef?.current?.rows[indexTr - 1 + index]
-          : undefined
-      )
-      .map(
-        (e: any) =>
-          e && [
-            e.cells[indexTd - 1] ? e.cells[indexTd - 1].getAttribute("my-index") : undefined,
-            e.cells[indexTd].getAttribute("my-index"),
-            e.cells[indexTd + 1] ? e.cells[indexTd + 1].getAttribute("my-index") : undefined,
-          ]
-      );
+      .reduce((arr, row, index) => {
+        if (tableRows[indexTr - 1 + index]) {
+          return [...arr, tableRows[indexTr - 1 + index]];
+        } else {
+          return arr;
+        }
+      }, []);
 
-    return strokes.flat(2).filter((e) => e && e);
+    const cellsAroundClickedCell = rowsAroundClickedCell.reduce((arr: any, e: any) => {
+      const adjacentCellsInRow = []
+      if (e.cells[indexTd - 1]) adjacentCellsInRow.push(e.cells[indexTd - 1].getAttribute("my-index"))
+      if (e.cells[indexTd + 1]) adjacentCellsInRow.push(e.cells[indexTd + 1].getAttribute("my-index"))
+      adjacentCellsInRow.push(e.cells[indexTd].getAttribute("my-index"))
+      
+      return [...arr, adjacentCellsInRow]
+    }, [])
+        
+    return cellsAroundClickedCell.flat(2);
   };
 
   const clickBomb = (): void => {
@@ -221,6 +225,7 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
                   .fill(0)
                   .map((el, indexTd) => (
                     <Cell
+                      key={cellsNumber}
                       clickCell={clickCell}
                       setSize={setSize}
                       cellsNumber={cellsNumber++}
