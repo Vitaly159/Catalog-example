@@ -33,14 +33,14 @@ const Game = () => {
 
     return arr;
   };
-``
+
   const createBombs = (): number[] => {
     const bombs = [];
     while (bombs.length < amountBombs[radioValue]) {
       const r = Math.floor(Math.random() * levels[radioValue].horizontal * levels[radioValue].vertical) + 0;
       if (bombs.indexOf(r) === -1) bombs.push(r);
     }
-
+    
     return bombs;
   };
 

@@ -11,6 +11,7 @@ import {
 //стили
 import { Box } from "@material-ui/core";
 import { useStyles } from "./BoardStyles";
+import Cell from "./Cell";
 
 type Props = {
   createCellsData: (radioValue: string) => any[];
@@ -25,7 +26,6 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
   const mines: any[] = useAppSelector((state) => state.minesweeper.mines);
   const cells: any[] = useAppSelector((state) => state.minesweeper.cells);
   const radioValue: any = useAppSelector((state) => state.minesweeper.radioValue);
-  const isGameOver: boolean = useAppSelector((state) => state.minesweeper.isGameOver);
   const elapsedTime: number = useAppSelector((state) => state.minesweeper.elapsedTime);
   const players: any[] = useAppSelector((state) => state.minesweeper.players);
   const flags = cells.reduce(
@@ -217,38 +217,25 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
             .fill(0)
             .map((e, indexTr) => (
               <tr key={indexTr}>
-
                 {Array(levels[radioValue].horizontal)
                   .fill(0)
                   .map((el, indexTd) => (
-                    <td
-                      className={`${classes.cell} ${
-                        cells[cellsNumber]?.isOpen ? classes.opened : classes.closed
-                      } ${chooseColor(cells[cellsNumber]?.minesAround)} ${setSize(radioValue)}`}
-                      key={indexTd}
-                      my-index={cellsNumber++}
-                      onClick={() => isGameOver === false && clickCell(indexTr, indexTd)}
-                      onContextMenu={(e) => isGameOver === false && clickRightMouse(e)}
-                    >
-                      {cells[cellsNumber - 1]?.isBomb ? (
-                        <img
-                          className={classes.image}
-                          src="https://w1.pngwing.com/pngs/797/343/png-transparent-ship-governance-classic-minesweeper-game-business-android-government-sales-technology-thumbnail.png"
-                          alt="bomb"
-                        />
-                      ) : (
-                        cells[cellsNumber - 1]?.minesAround !== 0 &&
-                        cells[cellsNumber - 1]?.minesAround
-                      )}
-                    </td>
+                    <Cell
+                      clickCell={clickCell}
+                      setSize={setSize}
+                      cellsNumber={cellsNumber++}
+                      clickRightMouse={clickRightMouse}
+                      chooseColor={chooseColor}
+                      indexTd={indexTd}
+                      indexTr={indexTr}
+                    />
                   ))}
-                  
               </tr>
             ))}
         </tbody>
       </table>
     </Box>
   );
-}
+};
 
 export default Board;
