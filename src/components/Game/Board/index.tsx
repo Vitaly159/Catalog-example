@@ -22,11 +22,13 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const tableRef: any = useRef();
+  const tableRows = tableRef?.current?.rows;
   const mines: any[] = useAppSelector((state) => state.minesweeper.mines);
   const cells: any[] = useAppSelector((state) => state.minesweeper.cells);
   const radioValue: any = useAppSelector((state) => state.minesweeper.radioValue);
   const elapsedTime: number = useAppSelector((state) => state.minesweeper.elapsedTime);
   const players: any[] = useAppSelector((state) => state.minesweeper.players);
+  const isGameOver: boolean = useAppSelector((state) => state.minesweeper.isGameOver);
   const flags = cells.reduce(
     (count: number, { markIndex }: any): number => (markIndex > 0 ? count + 1 : count),
     0
@@ -45,29 +47,35 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
 
   const chooseColor = (value: number) => colors[value];
 
-  const getCellsNumbersAround = (indexTr: number, indexTd: number): any[] => {
-    const tableRows = tableRef?.current?.rows;
-    
-    const rowsAroundClickedCell = Array(3)
+  const getRowsAroundClickedCell = (indexTr: number) =>
+    Array(3)
       .fill(0)
-      .reduce((arr, row, index) => {
-        if (tableRows[indexTr - 1 + index]) {
-          return [...arr, tableRows[indexTr - 1 + index]];
-        } else {
-          return arr;
-        }
-      }, []);
+      .reduce(
+        (arr, row, index) =>
+          tableRows[indexTr - 1 + index] ? [...arr, tableRows[indexTr - 1 + index]] : arr,
+        []
+      );
 
-    const cellsAroundClickedCell = rowsAroundClickedCell.reduce((arr: any, e: any) => {
-      const adjacentCellsInRow = []
-      if (e.cells[indexTd - 1]) adjacentCellsInRow.push(e.cells[indexTd - 1].getAttribute("my-index"))
-      if (e.cells[indexTd + 1]) adjacentCellsInRow.push(e.cells[indexTd + 1].getAttribute("my-index"))
-      adjacentCellsInRow.push(e.cells[indexTd].getAttribute("my-index"))
-      
-      return [...arr, adjacentCellsInRow]
-    }, [])
-        
-    return cellsAroundClickedCell.flat(2);
+  const getCellsAroundClickedCell = (rowsAroundClickedCell: any, indexTd: number) =>
+    rowsAroundClickedCell.reduce((arr: any, e: any) => {
+      const adjacentCellsInRow = [];
+
+      adjacentCellsInRow.push(e.cells[indexTd].getAttribute("my-index"));
+
+      e.cells[indexTd - 1] &&
+        adjacentCellsInRow.push(e.cells[indexTd - 1].getAttribute("my-index"));
+
+      e.cells[indexTd + 1] &&
+        adjacentCellsInRow.push(e.cells[indexTd + 1].getAttribute("my-index"));
+
+      return [...arr, adjacentCellsInRow].flat(2);
+    }, []);
+
+  const getCellsNumbersAround = (indexTr: number, indexTd: number): any[] => {
+    const rowsAroundClickedCell = getRowsAroundClickedCell(indexTr);
+    const cellsAroundClickedCell = getCellsAroundClickedCell(rowsAroundClickedCell, indexTd);
+
+    return cellsAroundClickedCell;
   };
 
   const clickBomb = (): void => {
@@ -80,6 +88,7 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
         isBomb: true,
       };
     });
+
     dispatch(setCells(copy));
     dispatch(setIsStartGame(false));
     dispatch(setIsGameOver(true));
@@ -87,6 +96,7 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
 
   const clickСellAroundBomb = (clickedCell: number, indexTr: number, indexTd: number): void => {
     let copy: any[] = Object.assign([], cells);
+
     copy[clickedCell] = {
       ...cells[clickedCell],
       isOpen: true,
@@ -94,11 +104,12 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
       minesAround: mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x)))
         .length,
     };
+
     dispatch(setCells(copy));
   };
 
   const openCellsAround = (indexTr: number, indexTd: number, amountBombsAround: any): void => {
-    [...tableRef?.current?.rows].forEach((el, indexStroke) => {
+    [...tableRows].forEach((el, indexStroke) => {
       [...el.cells].forEach((e, indexCell) => {
         if (!Object.keys(amountBombsAround).includes(String(e.getAttribute("my-index")))) {
           if (getCellsNumbersAround(indexTr, indexTd).includes(e.getAttribute("my-index"))) {
@@ -137,8 +148,7 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
   };
 
   const clickCell = (indexTr: number, indexTd: number) => {
-    const clickedCell: number =
-      tableRef?.current?.rows[indexTr]?.cells[indexTd].getAttribute("my-index");
+    const clickedCell: number = tableRows[indexTr]?.cells[indexTd].getAttribute("my-index");
 
     if (!cells[clickedCell].isOpen) {
       dispatch(setIsStartGame(true));
@@ -154,16 +164,6 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
       }
     }
   };
-
-  useEffect(() => {
-    dispatch(setMines(createBombs()));
-    dispatch(setCells(createCellsData(radioValue)));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("players", JSON.stringify(players));
-  }, [players]);
 
   const clickRightMouse = (e: any): void => {
     dispatch(setIsStartGame(true));
@@ -187,11 +187,37 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
     }
   };
 
-  let cellsNumber = 0; //порядковый номер ячейки с нуля
-
   const findClosedCellsWithoutBombs = (cell: any) =>
     cell.isOpen === false && !mines.includes(cell.cell);
   const checkIsAllCellsOpened = cells.length ? cells.some(findClosedCellsWithoutBombs) : true;
+
+  const setSize = (radioValue: string) => {
+    if (radioValue === "easy") return classes.easy;
+    if (radioValue === "medium") return classes.medium;
+    if (radioValue === "hard") return classes.hard;
+  };
+
+  let cellsNumber = 0; //порядковый номер ячейки с нуля
+
+  const cellProps = {
+    cells: cells,
+    radioValue: radioValue,
+    isGameOver: isGameOver,
+    clickCell: clickCell,
+    setSize: setSize,
+    clickRightMouse: clickRightMouse,
+    chooseColor: chooseColor,
+  };
+
+  useEffect(() => {
+    dispatch(setMines(createBombs()));
+    dispatch(setCells(createCellsData(radioValue)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("players", JSON.stringify(players));
+  }, [players]);
 
   useEffect(() => {
     if (!checkIsAllCellsOpened) {
@@ -207,32 +233,23 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cells]);
 
-  const setSize = (radioValue: string) => {
-    if (radioValue === "easy") return classes.easy;
-    if (radioValue === "medium") return classes.medium;
-    if (radioValue === "hard") return classes.hard;
-  };
-
   return (
     <Box className={classes.tableBox}>
       <table className={classes.table} ref={tableRef}>
         <tbody>
           {Array(levels[radioValue].vertical)
             .fill(0)
-            .map((e, indexTr) => (
+            .map((line, indexTr) => (
               <tr key={indexTr}>
                 {Array(levels[radioValue].horizontal)
                   .fill(0)
-                  .map((el, indexTd) => (
+                  .map((cell, indexTd) => (
                     <Cell
+                      {...cellProps}
                       key={cellsNumber}
-                      clickCell={clickCell}
-                      setSize={setSize}
-                      cellsNumber={cellsNumber++}
-                      clickRightMouse={clickRightMouse}
-                      chooseColor={chooseColor}
                       indexTd={indexTd}
                       indexTr={indexTr}
+                      cellsNumber={cellsNumber++}
                     />
                   ))}
               </tr>
