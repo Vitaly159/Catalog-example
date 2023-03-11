@@ -28,7 +28,6 @@ const useStyles = makeStyles({
         color: "#7676f9",
       },
     }
- 
   },
   checkboxes: {
     display: "flex",

@@ -14,14 +14,17 @@ export const useStyles = makeStyles({
     justifyContent: "center",
   },
   cell: {
-    border: "1px black solid",
+    border: "0.5px grey solid",
     textAlign: "center",
     background: "rgb(220,220,220)",
     fontWeight: 600,
+    margin: "-2px 0 0 -2px",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   closed: {
     cursor: "pointer",
-    boxShadow: "2px 2px rgb(180,180,180)",
     "&:hover": {
       background: "rgb(240,240,240)",
     },
@@ -62,13 +65,18 @@ export const useStyles = makeStyles({
     color: "pink",
   },
   easy: {
-    width: "calc(2vh + 2vw)",
-    height: "calc(2vh + 2vw)",
-    fontSize: "calc(1.2vh + 1.2vw)",
+    width: "calc(3.5vh + 3.5vw)",
+    height: "calc(3.5vh + 3.5vw)",
+    fontSize: "calc(10px + (1vh + 1vw))",
+    maxWidth: "calc(50px - 0.5vw)",
+    maxHeight: "calc(50px - 0.5vw)",
+    boxSizing: "border-box",
   },
   medium: {
-    width: "calc(1.2vh + 1.2vw)",
-    height: "calc(1.2vh + 1.2vw)",
+    width: "calc(1.8vh + 1.8vw)",
+    height: "calc(1.8vh + 1.8vw)",
+    maxWidth: "calc(40px - 0.5vw)",
+    maxHeight: "calc(40px - 0.5vw)",
     fontSize: "calc(1vh + 1vw)",
   },
   hard: {

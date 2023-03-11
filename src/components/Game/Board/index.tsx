@@ -180,9 +180,11 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
   };
 
   const clickRightMouse = (e: any): void => {
+    console.log(e.currentTarget);
+    
     dispatch(setIsStartGame(true));
     e.preventDefault();
-    const cellIndex = e.target.getAttribute("my-index");
+    const cellIndex = e.currentTarget.getAttribute("my-index");
     let cell = cells[cellIndex];
 
     if ((cell.isOpen === false && mines.length - flags > 0) || cell.markIndex > 0) {
