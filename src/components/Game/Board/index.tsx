@@ -77,7 +77,7 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
       return [...arr, adjacentCellsInRow].flat(2);
     }, []);
 
-  const getCellsNumbersAround = (indexTr: number, indexTd: number): any[] => {
+  const getCellsAroundClicked = (indexTr: number, indexTd: number): any[] => {
     const rowsAroundClickedCell = getRowsAroundClickedCell(indexTr);
     const cellsAroundClickedCell = getCellsAroundClickedCell(rowsAroundClickedCell, indexTd);
 
@@ -107,61 +107,66 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
       ...cells[clickedCell],
       isOpen: true,
       markIndex: 0,
-      minesAround: mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x)))
+      minesAround: mines?.filter((bomb) => getCellsAroundClicked(indexTr, indexTd).includes(String(bomb)))
         .length,
     };
 
     dispatch(setCells(copy));
   };
 
-  const openCellsAround = (indexTr: number, indexTd: number, amountBombsAround: any): void => {
-    [...tableRows].forEach((el, indexStroke) => {
-      [...el.cells].forEach((e, indexCell) => {
-        if (!Object.keys(amountBombsAround).includes(String(e.getAttribute("my-index")))) {
-          if (getCellsNumbersAround(indexTr, indexTd).includes(e.getAttribute("my-index"))) {
-            amountBombsAround[e.getAttribute("my-index")] = mines?.filter((x) =>
-              getCellsNumbersAround(indexStroke, indexCell).includes(String(x))
-            ).length;
-
-            if (
-              mines?.filter((x) =>
-                getCellsNumbersAround(indexStroke, indexCell).includes(String(x))
-              ).length > 0
-            ) {
-              return;
-            } else {
-              openCellsAround(indexStroke, indexCell, amountBombsAround);
-            }
-          }
-        }
-      });
-    });
-
+  const openCellsWithoutBombsAround = (checkedCellsWithoutBombs: any) => {
     dispatch(
       setCells(
         cells.map((cell: any, index: number) =>
-          amountBombsAround[index] >= 0
+          checkedCellsWithoutBombs[index] >= 0
             ? {
                 ...cell,
                 isOpen: true,
-                minesAround: amountBombsAround[index],
+                minesAround: checkedCellsWithoutBombs[index],
                 markIndex: 0,
               }
             : cell
         )
       )
     );
+  }
+
+  const checkCellsAround = (indexTr: number, indexTd: number, checkedCellsWithoutBombs: any): void => {
+    [...tableRows].forEach((el, indexStroke) => {
+      [...el.cells].forEach((e, indexCell) => {
+        if (!Object.keys(checkedCellsWithoutBombs).includes(String(e.getAttribute("my-index")))) {
+
+          if (getCellsAroundClicked(indexTr, indexTd).includes(e.getAttribute("my-index"))) {
+            checkedCellsWithoutBombs[e.getAttribute("my-index")] = mines?.filter((bomb) =>
+              getCellsAroundClicked(indexStroke, indexCell).includes(String(bomb))
+            ).length;
+            if (
+              mines?.filter((bomb) =>
+                getCellsAroundClicked(indexStroke, indexCell).includes(String(bomb))
+              ).length > 0
+            ) {              
+              return;
+            } else {
+              checkCellsAround(indexStroke, indexCell, checkedCellsWithoutBombs);
+            }
+          }
+
+        }
+      });
+    });
+
+    openCellsWithoutBombsAround(checkedCellsWithoutBombs)
   };
 
-  const detectEvent = (indexTr: number, indexTd: number, clickedCell: number) => {
+  const chooseClickEvent = (indexTr: number, indexTd: number, clickedCell: number) => {
     if (mines?.includes(Number(clickedCell))) {
       clickBomb(); //результат нажатия на бомбу
     } else if (
-      mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x))).length
+      mines?.filter((bomb) => getCellsAroundClicked(indexTr, indexTd).includes(String(bomb))).length
     ) {
       clickСellAroundBomb(clickedCell, indexTr, indexTd); //результат нажатия на ячейку рядом с бомбой
     } else {
-      openCellsAround(indexTr, indexTd, {}); //открываем соседние ячейки - рекурсия
+      checkCellsAround(indexTr, indexTd, {}); //открываем соседние ячейки - рекурсия
     }
   };
 
@@ -170,7 +175,7 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
 
     if (!cells[clickedCell].isOpen) {
       dispatch(setIsStartGame(true));
-      detectEvent(indexTr, indexTd, clickedCell);
+      chooseClickEvent(indexTr, indexTd, clickedCell);
     }
   };
 

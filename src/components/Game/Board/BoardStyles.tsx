@@ -62,9 +62,9 @@ export const useStyles = makeStyles({
     color: "pink",
   },
   easy: {
-    width: "calc(3vh + 3vw)",
-    height: "calc(3vh + 3vw)",
-    fontSize: "calc(2vh + 2vw)",
+    width: "calc(2vh + 2vw)",
+    height: "calc(2vh + 2vw)",
+    fontSize: "calc(1.2vh + 1.2vw)",
   },
   medium: {
     width: "calc(1.2vh + 1.2vw)",

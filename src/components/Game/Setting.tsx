@@ -23,9 +23,12 @@ const useStyles = makeStyles({
     color: "blue",
     cursor: "pointer",
     marginBottom: 20,
-    "&:hover": {
-      color: "#7676f9",
-    },
+    "& >span": {
+      "&:hover": {
+        color: "#7676f9",
+      },
+    }
+ 
   },
   checkboxes: {
     display: "flex",
@@ -44,7 +47,7 @@ const useStyles = makeStyles({
     display: "flex",
     justifyContent: "center",
     marginTop: 10,
-    marginBottom: -15,
+    marginBottom: 5,
   },
   marginRight20: {
     marginRight: 20,
@@ -57,8 +60,11 @@ const useStyles = makeStyles({
     },
   },
   link: {
-    textDecoration: 'none'
-  }
+    textDecoration: "none",
+  },
+  timer: {
+    minWidth: 120,
+  },
 });
 
 type Props = {
@@ -74,10 +80,12 @@ function Setting({ createCellsData, createBombs }: Props) {
   const elapsedTime: number = useAppSelector((state) => state.minesweeper.elapsedTime);
   const isStartGame: boolean = useAppSelector((state) => state.minesweeper.isStartGame);
   const radioValue: string = useAppSelector((state) => state.minesweeper.radioValue);
-  const flags = cells.reduce((count: number, { markIndex }: any): number => (markIndex > 0 ? count + 1 : count), 0);
   const [startAgain, setStartAgain] = useState(false);
-
   const [open, setOpen] = useState(false);
+  const flags = cells.reduce(
+    (count: number, { markIndex }: any): number => (markIndex > 0 ? count + 1 : count),
+    0
+  );
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -119,27 +127,39 @@ function Setting({ createCellsData, createBombs }: Props) {
 
   return (
     <>
-      <Box className={classes.blueText} onClick={handleClickOpen}>
-        Рейтинг
+      <Box className={classes.blueText}>
+        <span onClick={refresh} className={`${classes.refresh} ${classes.blueText}`}>
+          Начать заново
+        </span>
+        <span onClick={handleClickOpen}>Рейтинг</span>
       </Box>
       <Box className={classes.checkboxes}>
         <FormControl component="fieldset" className={classes.formControl}>
           <FormLabel component="legend">Уровень сложности:</FormLabel>
           <RadioGroup row value={radioValue} onChange={clickRadio}>
-            <FormControlLabel value={"easy"} control={<Radio className={classes.radio} />} label="Новичок" />
-            <FormControlLabel value={"medium"} control={<Radio className={classes.radio} />} label="Любитель" />
-            <FormControlLabel value={"hard"} control={<Radio className={classes.radio} />} label="Профессионал" />
+            <FormControlLabel
+              value={"easy"}
+              control={<Radio className={classes.radio} />}
+              label="Новичок"
+            />
+            <FormControlLabel
+              value={"medium"}
+              control={<Radio className={classes.radio} />}
+              label="Любитель"
+            />
+            <FormControlLabel
+              value={"hard"}
+              control={<Radio className={classes.radio} />}
+              label="Профессионал"
+            />
           </RadioGroup>
         </FormControl>
       </Box>
       <Box className={classes.gameInfo}>
-        <span onClick={refresh} className={`${classes.refresh} ${classes.blueText}`}>
-          Начать заново
-        </span>
         <span className={classes.marginRight20}>
           <b>Флаги</b>: {mines.length - flags}
         </span>
-        <span>
+        <span className={classes.timer}>
           <b>Время</b>: {elapsedTime} сек.
         </span>
       </Box>
@@ -153,7 +173,10 @@ function Setting({ createCellsData, createBombs }: Props) {
             Отмена
           </Button>
           <Link to="/records" className={classes.link}>
-            <Button onClick={handleClose} color="primary"> Продолжить</Button>
+            <Button onClick={handleClose} color="primary">
+              {" "}
+              Продолжить
+            </Button>
           </Link>
         </DialogActions>
       </Dialog>
