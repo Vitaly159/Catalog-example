@@ -67,7 +67,7 @@ export const useStyles = makeStyles({
   easy: {
     width: "calc(3.5vh + 3.5vw)",
     height: "calc(3.5vh + 3.5vw)",
-    fontSize: "calc(10px + (1vh + 1vw))",
+    fontSize: "calc(22px + (0.1vh + 0.1vw))",
     maxWidth: "calc(50px - 0.5vw)",
     maxHeight: "calc(50px - 0.5vw)",
     boxSizing: "border-box",
@@ -77,11 +77,11 @@ export const useStyles = makeStyles({
     height: "calc(1.8vh + 1.8vw)",
     maxWidth: "calc(40px - 0.5vw)",
     maxHeight: "calc(40px - 0.5vw)",
-    fontSize: "calc(1vh + 1vw)",
+    fontSize: "calc(10px + (0.5vh + 0.5vw))",
   },
   hard: {
     width: "calc(0.8vh + 1vw)",
     height: "calc(0.8vh + 1vw)",
-    fontSize: "calc(0.5vh + 0.6vw)",
+    fontSize: "calc(0.8vh + 0.8vw)",
   },
 });
