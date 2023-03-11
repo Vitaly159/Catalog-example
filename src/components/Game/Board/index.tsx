@@ -47,6 +47,12 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
 
   const chooseColor = (value: number) => colors[value];
 
+  const setSize = (radioValue: string) => {
+    if (radioValue === "easy") return classes.easy;
+    if (radioValue === "medium") return classes.medium;
+    if (radioValue === "hard") return classes.hard;
+  };
+
   const getRowsAroundClickedCell = (indexTr: number) =>
     Array(3)
       .fill(0)
@@ -147,21 +153,24 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
     );
   };
 
+  const detectEvent = (indexTr: number, indexTd: number, clickedCell: number) => {
+    if (mines?.includes(Number(clickedCell))) {
+      clickBomb(); //результат нажатия на бомбу
+    } else if (
+      mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x))).length
+    ) {
+      clickСellAroundBomb(clickedCell, indexTr, indexTd); //результат нажатия на ячейку рядом с бомбой
+    } else {
+      openCellsAround(indexTr, indexTd, {}); //открываем соседние ячейки - рекурсия
+    }
+  };
+
   const clickCell = (indexTr: number, indexTd: number) => {
     const clickedCell: number = tableRows[indexTr]?.cells[indexTd].getAttribute("my-index");
 
     if (!cells[clickedCell].isOpen) {
       dispatch(setIsStartGame(true));
-
-      if (mines?.includes(Number(clickedCell))) {
-        clickBomb(); //результат нажатия на бомбу
-      } else if (
-        mines?.filter((x) => getCellsNumbersAround(indexTr, indexTd).includes(String(x))).length
-      ) {
-        clickСellAroundBomb(clickedCell, indexTr, indexTd); //результат нажатия на ячейку рядом с бомбой
-      } else {
-        openCellsAround(indexTr, indexTd, {}); //открываем соседние ячейки - рекурсия
-      }
+      detectEvent(indexTr, indexTd, clickedCell);
     }
   };
 
@@ -169,12 +178,10 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
     dispatch(setIsStartGame(true));
     e.preventDefault();
     const cellIndex = e.target.getAttribute("my-index");
-
     let cell = cells[cellIndex];
 
     if ((cell.isOpen === false && mines.length - flags > 0) || cell.markIndex > 0) {
       const index = cell.markIndex < 2 ? cell.markIndex + 1 : 0;
-
       const marks = ["", "?", "!"];
 
       let copy: any = Object.assign([], cells);
@@ -183,19 +190,15 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
         minesAround: marks[index],
         markIndex: index,
       };
+
       dispatch(setCells(copy));
     }
   };
 
   const findClosedCellsWithoutBombs = (cell: any) =>
     cell.isOpen === false && !mines.includes(cell.cell);
-  const checkIsAllCellsOpened = cells.length ? cells.some(findClosedCellsWithoutBombs) : true;
 
-  const setSize = (radioValue: string) => {
-    if (radioValue === "easy") return classes.easy;
-    if (radioValue === "medium") return classes.medium;
-    if (radioValue === "hard") return classes.hard;
-  };
+  const checkIsAllCellsOpened = cells.length ? cells.some(findClosedCellsWithoutBombs) : true;
 
   let cellsNumber = 0; //порядковый номер ячейки с нуля
 
