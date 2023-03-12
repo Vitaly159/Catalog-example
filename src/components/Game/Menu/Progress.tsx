@@ -1,10 +1,8 @@
-//redux
 import { useAppSelector } from "../../../hooks/hooks";
-//стили
 import { useStyles } from "./MenuStyles";
 import { Box } from "@material-ui/core";
 
-function Progress() {
+const Progress = () => {
   const classes = useStyles();
   const mines: any[] = useAppSelector((state) => state.minesweeper.mines);
   const cells: any[] = useAppSelector((state) => state.minesweeper.cells);

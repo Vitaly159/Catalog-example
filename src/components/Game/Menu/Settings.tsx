@@ -1,8 +1,6 @@
 import { useEffect } from "react";
-//redux
 import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
 import { setRadioValue } from "../../../reducer/reducer";
-//стили
 import { useStyles } from "./MenuStyles";
 import { Box, Radio, RadioGroup } from "@material-ui/core";
 import { FormControl, FormLabel, FormControlLabel } from "@material-ui/core";
@@ -11,7 +9,7 @@ type Props = {
   refresh: (radioValue: string) => void;
 };
 
-function Settings({ refresh }: Props) {
+const Settings = ({ refresh }: Props) => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const radioValue: string = useAppSelector((state) => state.minesweeper.radioValue);

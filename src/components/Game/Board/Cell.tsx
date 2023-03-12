@@ -16,15 +16,16 @@ const Cell = ({
 
   return (
     <td
-      // className={classes.}
       key={indexTd}
       my-index={cellsNumber}
       onClick={() => isGameOver === false && clickCell(indexTr, indexTd)}
       onContextMenu={(e) => isGameOver === false && clickRightMouse(e)}
     >
-      <div className={`${classes.cell} ${
-        cells[cellsNumber]?.isOpen ? classes.opened : classes.closed
-      } ${chooseColor(cells[cellsNumber]?.minesAround)} ${setSize(radioValue)}`}>
+      <div
+        className={`${classes.cell} ${
+          cells[cellsNumber]?.isOpen ? classes.opened : classes.closed
+        } ${chooseColor(cells[cellsNumber]?.minesAround)} ${setSize(radioValue)}`}
+      >
         {cells[cellsNumber]?.isBomb ? (
           <img
             className={classes.image}

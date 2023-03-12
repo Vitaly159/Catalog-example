@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-//redux
 import { useAppSelector, useAppDispatch } from "../../../hooks/hooks";
 import {
   setElapsedTime,
@@ -8,7 +7,6 @@ import {
   setMines,
   setCells,
 } from "../../../reducer/reducer";
-//стили
 import { useStyles } from "./MenuStyles";
 import { Box } from "@material-ui/core";
 import StartAgainButton from "./StartAgainButton";
@@ -21,7 +19,7 @@ type Props = {
   createBombs: () => number[];
 };
 
-function Menu({ createCellsData, createBombs }: Props) {
+const Menu = ({ createCellsData, createBombs }: Props) => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const isStartGame: boolean = useAppSelector((state) => state.minesweeper.isStartGame);

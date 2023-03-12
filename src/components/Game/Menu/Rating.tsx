@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-//стили
 import { useStyles } from "./MenuStyles";
 import { Button } from "@material-ui/core";
 import { Dialog, DialogActions, DialogContent, DialogContentText } from "@material-ui/core";
 
-function Rating() {
+const Rating = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 

@@ -107,8 +107,9 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
       ...cells[clickedCell],
       isOpen: true,
       markIndex: 0,
-      minesAround: mines?.filter((bomb) => getCellsAroundClicked(indexTr, indexTd).includes(String(bomb)))
-        .length,
+      minesAround: mines?.filter((bomb) =>
+        getCellsAroundClicked(indexTr, indexTd).includes(String(bomb))
+      ).length,
     };
 
     dispatch(setCells(copy));
@@ -129,33 +130,33 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
         )
       )
     );
-  }
+  };
 
-  const checkCellsAround = (indexTr: number, indexTd: number, checkedCellsWithoutBombs: any): void => {
+  const checkCellsAround = (
+    indexTr: number,
+    indexTd: number,
+    checkedCellsWithoutBombs: any
+  ): void => {
     [...tableRows].forEach((el, indexStroke) => {
       [...el.cells].forEach((e, indexCell) => {
         if (!Object.keys(checkedCellsWithoutBombs).includes(String(e.getAttribute("my-index")))) {
-
           if (getCellsAroundClicked(indexTr, indexTd).includes(e.getAttribute("my-index"))) {
-            checkedCellsWithoutBombs[e.getAttribute("my-index")] = mines?.filter((bomb) =>
+            const amountBombsAround = mines?.filter((bomb) =>
               getCellsAroundClicked(indexStroke, indexCell).includes(String(bomb))
             ).length;
-            if (
-              mines?.filter((bomb) =>
-                getCellsAroundClicked(indexStroke, indexCell).includes(String(bomb))
-              ).length > 0
-            ) {              
+
+            checkedCellsWithoutBombs[e.getAttribute("my-index")] = amountBombsAround;
+            if (amountBombsAround > 0) {
               return;
             } else {
               checkCellsAround(indexStroke, indexCell, checkedCellsWithoutBombs);
             }
           }
-
         }
       });
     });
 
-    openCellsWithoutBombsAround(checkedCellsWithoutBombs)
+    openCellsWithoutBombsAround(checkedCellsWithoutBombs);
   };
 
   const chooseClickEvent = (indexTr: number, indexTd: number, clickedCell: number) => {
@@ -179,7 +180,7 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
     }
   };
 
-  const clickRightMouse = (e: any): void => {    
+  const clickRightMouse = (e: any): void => {
     dispatch(setIsStartGame(true));
     e.preventDefault();
     const cellIndex = e.currentTarget.getAttribute("my-index");

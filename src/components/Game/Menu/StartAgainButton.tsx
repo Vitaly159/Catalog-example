@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-//redux
 import { useAppSelector } from "../../../hooks/hooks";
-//стили
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
@@ -58,7 +56,7 @@ type Props = {
   refresh: (radioValue: string) => void;
 };
 
-function StartAgainButton({ refresh }: Props) {
+const StartAgainButton = ({ refresh }: Props) => {
   const classes = useStyles();
   const radioValue: string = useAppSelector((state) => state.minesweeper.radioValue);
   const [startAgain, setStartAgain] = useState(false);

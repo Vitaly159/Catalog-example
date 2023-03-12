@@ -1,8 +1,6 @@
 import { Routes, Route } from "react-router-dom"; //роутинг(маршрутизация)
-//стили
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Grid } from "@material-ui/core";
-//компоненты
 import Game from "./components/Game";
 import RecordsTable from "./components/RecordsTable/Index";
 
@@ -13,7 +11,7 @@ const useStyles = makeStyles({
   },
 });
 
-function App() {
+const App = () => {
   const classes = useStyles();
 
   return (
