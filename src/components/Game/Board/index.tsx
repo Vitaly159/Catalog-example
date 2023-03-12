@@ -179,9 +179,7 @@ const Board = ({ createCellsData, levels, createBombs }: Props) => {
     }
   };
 
-  const clickRightMouse = (e: any): void => {
-    console.log(e.currentTarget);
-    
+  const clickRightMouse = (e: any): void => {    
     dispatch(setIsStartGame(true));
     e.preventDefault();
     const cellIndex = e.currentTarget.getAttribute("my-index");

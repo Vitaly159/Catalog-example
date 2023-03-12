@@ -1,7 +1,7 @@
 import { useAppSelector } from "../../hooks/hooks";
 //компоненты
 import Board from "../Game/Board";
-import Setting from "../../components/Game/Setting";
+import Menu from "../../components/Game/Menu";
 
 const Game = () => {
   const radioValue: string = useAppSelector((state) => state.minesweeper.radioValue);
@@ -62,7 +62,7 @@ const Game = () => {
 
   return (
     <>
-      <Setting createCellsData={createCellsData} createBombs={createBombs} />
+      <Menu createCellsData={createCellsData} createBombs={createBombs} />
       <Board createCellsData={createCellsData} levels={levels} createBombs={createBombs} />
     </>
   );
