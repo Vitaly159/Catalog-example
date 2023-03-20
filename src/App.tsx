@@ -4,6 +4,7 @@ import { Box, Grid } from "@material-ui/core";
 import io from "socket.io-client";
 import { useEffect } from "react";
 
+import UserSelection from "./components/UserSelection";
 
 const useStyles = makeStyles({
   wrapper: {
@@ -12,23 +13,19 @@ const useStyles = makeStyles({
   },
 });
 
-const socket = io('http://localhost:9999');
-// io('http://localhost:9999');
 const App = () => {
   const classes = useStyles();
-  useEffect(() => {
-    socket.emit('join')
-  }, [])
 
   return (
     <Box className={classes.wrapper}>
       <Grid container spacing={1} alignItems="center" justifyContent="center">
-        <Box>
-         привет
-        </Box>
+        <Routes>
+          <Route path="/" element={<UserSelection />} />
+        </Routes>
+       
       </Grid>
     </Box>
   );
-}
+};
 
 export default App;
