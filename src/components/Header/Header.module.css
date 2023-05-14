@@ -1,10 +1,14 @@
 .wrapper {
+  width: calc(100% - 120px);
   display: flex;
   justify-content:flex-end;
   align-items: center;
   height: 50px;
   border-bottom: 1px grey solid;
   padding: 0 60px;
+  position: fixed;
+  background-color: white;
+  opacity: 0.9;
 }
 
 .shoppingCart {

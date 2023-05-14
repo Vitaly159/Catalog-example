@@ -14,6 +14,7 @@
 
 .currentPage {
   text-align: center;
+  position: sticky;
 }
 
 .items {
