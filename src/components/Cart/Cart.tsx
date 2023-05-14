@@ -19,6 +19,7 @@ const Cart = () => {
     const isCartData: CartProduct[] | null = JSON.parse(localStorage.getItem("myProducts")!);
     const fillCart: CartProduct[] = isCartData ? isCartData : [];
     dispatch(setCartProducts(fillCart));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
