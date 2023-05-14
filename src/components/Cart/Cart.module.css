@@ -1,0 +1,18 @@
+.wrapper {
+  padding: 50px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  row-gap: 15px;
+}
+
+.back {
+  text-align: center;
+  cursor: pointer;
+}
+
+.back h2:hover {
+  color: rgb(127, 127, 127);
+}

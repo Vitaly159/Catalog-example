@@ -1,0 +1,43 @@
+.image {
+  height: 250px;
+  border: 1px rgb(193, 193, 193) solid;
+  background-size: contain;
+  text-align: center;
+}
+
+.imageBlock img {
+  max-height: 100%;
+}
+
+.itemBlock {
+  width: 300px;
+  box-sizing: border-box;
+  border: 1px grey solid;
+  padding: 30px;
+  margin: 0 10px;
+}
+
+.info {
+  margin: 10px 0;
+}
+
+.back {
+  text-align: center;
+  cursor: pointer;
+}
+
+.back h2:hover {
+  color: rgb(127, 127, 127);
+}
+
+.buttonBlock {
+  text-align: right;
+}
+
+.buttonBlock button{
+  text-align: right;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 5px;
+  color: red
+}

@@ -1,0 +1,109 @@
+.wrapper {
+  padding: 60px;
+  box-sizing: border-box;
+}
+
+.imageBlock {
+  height: 350px;
+  border: 1px rgb(193, 193, 193) solid;
+  background-size: contain;
+  text-align: center;
+}
+
+.imageBlock img {
+  max-height: 100%;
+}
+
+.slider {
+  text-align: center;
+}
+
+.slider button {
+  font-size: 1rem;
+  border: 1px black solid;
+  cursor: pointer;
+  background-color: aliceblue;
+  border-radius: 5px;
+  font-weight: 600;
+  padding: 0 10px;
+}
+
+.items {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+
+.item {
+  width: 500px;
+  box-sizing: border-box;
+  border: 1px grey solid;
+  padding: 30px 30px 0;
+}
+
+.info {
+  margin: 10px 0;
+}
+
+.back {
+  text-align: center;
+  cursor: pointer;
+}
+
+.back h2:hover {
+  color: rgb(127, 127, 127);
+}
+
+.size,
+.color {
+  margin: 0 5px;
+  border: 1px rgb(176, 176, 176) solid;
+  border-radius: 10px;
+  padding: 1px 5px;
+  cursor: pointer;
+}
+
+.hover:hover {
+  background-color: rgb(241, 241, 241);
+}
+
+.active {
+  background-color: rgb(225, 255, 235);
+}
+
+.disabled {
+  background-color: rgb(241, 241, 241);
+  color: rgb(163, 163, 163);
+  border: none;
+}
+
+.buttonBlock {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.buttonBlockInner {
+  display: inline;
+  align-items: center;
+  text-align: right;
+}
+
+.buttonBlock button {
+  text-align: right;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 5px;
+  color: rgb(103, 103, 249);
+}
+
+.textError {
+  color: red;
+  height: 30px;
+}
+
+.textResolve {
+  color: green;
+  height: 30px;
+}

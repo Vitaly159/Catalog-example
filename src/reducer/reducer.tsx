@@ -1,56 +1,68 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { setAutoFreeze } from "immer";
-setAutoFreeze(false);
 
-type States = {
-  elapsedTime: number;
-  isStartGame: boolean;
-  radioValue: string;
-  mines: number[];
-  isGameOver: boolean;
-  cells: any[];
-  players: any[];
+export type Color = {
+  id: number,
+  name: string,
+  description: string,
+  price: string,
+  images: string[],
+  sizes: number[]
+}
+
+export type Product = {
+  id: number,
+  name: string,
+  colors: Color[]
+}
+
+export type Size = {
+  id: number,
+  label: string,
+  number: number
+}
+
+export type CartProduct = {
+  colorName: string,
+  name: string,
+  price: string,
+  productID: string,
+  images: string[],
+  size: Size
+}
+
+export type States = {
+  products: Product[];
+  pageName: string;
+  chosenProduct: Product | null;
+  cartProducts: any[];
 };
 
 const initialState: States = {
-  mines: [],
-  elapsedTime: 0,
-  isStartGame: false,
-  radioValue: "easy",
-  isGameOver: false,
-  cells: [],
-  players: localStorage.getItem("players") ? JSON.parse(localStorage.getItem("players")!) : [],
+  products: [],
+  pageName: "Список товаров",
+  chosenProduct: null,
+  cartProducts: [],
 };
 
-const minesWeeperSlice = createSlice({
-  name: "minesWeeper",
+const catalogSlice = createSlice({
+  name: "catalog",
   initialState,
 
   reducers: {
-    setElapsedTime(state, action: PayloadAction<number>) {
-      state.elapsedTime = action.payload;
+    setProducts(state, action: PayloadAction<Product[]>) {
+      state.products = action.payload;
     },
-    setIsStartGame(state, action: PayloadAction<boolean>) {
-      state.isStartGame = action.payload;
+    setPageName(state, action: PayloadAction<string>) {
+      state.pageName = action.payload;
     },
-    setRadioValue(state, action: PayloadAction<string>) {
-      state.radioValue = action.payload;
+    setChosenProduct(state, action: PayloadAction<Product | null>) {
+      state.chosenProduct = action.payload;
     },
-    setMines(state, action: PayloadAction<number[]>) {
-      state.mines = action.payload;
-    },
-    setIsGameOver(state, action: PayloadAction<boolean>) {
-      state.isGameOver = action.payload;
-    },
-    setCells(state, action: PayloadAction<any[]>) {
-      state.cells = action.payload;
-    },
-    setPlayers(state, action: PayloadAction<any[]>) {
-      state.players = action.payload;
+    setCartProducts(state, action: PayloadAction<any[]>) {
+      state.cartProducts = action.payload;
     },
   },
 });
 
-export const { setElapsedTime, setIsStartGame, setRadioValue, setMines, setIsGameOver, setCells, setPlayers } =
-  minesWeeperSlice.actions;
-export default minesWeeperSlice.reducer;
+export const { setProducts, setPageName, setChosenProduct, setCartProducts } = catalogSlice.actions;
+export default catalogSlice.reducer;

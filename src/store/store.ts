@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import minesweeper from "../reducer/reducer";
+import catalog from "../reducer/reducer";
 
 const store = configureStore({
   reducer: {
-    minesweeper: minesweeper,
+    catalog: catalog,
   },
 });
 
