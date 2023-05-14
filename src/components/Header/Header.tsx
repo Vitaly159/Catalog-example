@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { useNavigate } from "react-router";
 import { setChosenProduct } from "../../reducer/reducer";
-import { CartProduct } from "../../reducer/reducer";
 import styles from "./Header.module.css";
 
 const Header = () => {
