@@ -1,4 +1,4 @@
-.image {
+.imageBlock {
   height: 250px;
   border: 1px rgb(193, 193, 193) solid;
   background-size: contain;
@@ -9,7 +9,7 @@
   max-height: 100%;
 }
 
-.itemBlock {
+.item {
   width: 300px;
   box-sizing: border-box;
   border: 1px grey solid;
