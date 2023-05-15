@@ -9,7 +9,7 @@ type Props = {
 
 const ProductCard = ({ product }: Props) => {
   const dispatch = useAppDispatch();
-  const cartProducts = useAppSelector((state) => state.catalog.cartProducts);
+  const cartProducts: CartProduct[] = useAppSelector((state) => state.catalog.cartProducts);
 
   const updateData = () => {
     const cartData: CartProduct[] | null = JSON.parse(localStorage.getItem("myProducts")!);
@@ -21,6 +21,7 @@ const ProductCard = ({ product }: Props) => {
     const update: CartProduct[] = cartProducts.filter(
       (item) => item.productID !== product.productID
     );
+    
     localStorage.setItem("myProducts", JSON.stringify(update));
     updateData();
   };

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { setProducts, setPageName, setChosenProduct } from "../../reducer/reducer";
-import { getProducts, getProduct } from "../api";
+import { getProducts, getProduct } from "../fakeApi/api";
 import { Product } from "../../reducer/reducer";
 import styles from "./Main.module.css";
 
