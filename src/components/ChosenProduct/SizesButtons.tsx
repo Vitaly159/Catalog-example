@@ -1,6 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { setNotificationText } from "../../reducer/reducer";
-import { setChosenSize } from "../../reducer/reducer";
+import { setNotificationText, setChosenSize } from "../../reducer/reducer";
 import { Product, Size } from "../../reducer/reducer";
 import { getSize } from "../fakeApi/api";
 import styles from "./ChosenProduct.module.css";

@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 import { setCartProducts } from "../../reducer/reducer";
-import ProductCard from "../ProductCard";
 import { CartProduct } from "../../reducer/reducer";
+import ProductCard from "../ProductCard";
 import styles from "./Cart.module.css";
 
 const Cart = () => {

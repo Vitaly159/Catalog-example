@@ -4,11 +4,11 @@ import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
 import { getProduct, getSizes, getProductColor } from "../fakeApi/api";
 import { setChosenProduct, setCartProducts, setChosenColor } from "../../reducer/reducer";
 import { CartProduct, Product, Color, Size } from "../../reducer/reducer";
-import styles from "./ChosenProduct.module.css";
 import SliderButtons from "./SliderButtons";
 import ColorsButtons from "./ColorsButtons";
 import SizesButtons from "./SizesButtons";
 import AddInCartButton from "./AddInCartButton";
+import styles from "./ChosenProduct.module.css";
 
 type localColors = {
   id: number;
